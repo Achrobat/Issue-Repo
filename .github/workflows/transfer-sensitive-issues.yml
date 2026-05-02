@@ -3,7 +3,6 @@ name: Transfer sensitive issues
 on:
   issues:
     types:
-      - opened
       - labeled
 
 concurrency:
