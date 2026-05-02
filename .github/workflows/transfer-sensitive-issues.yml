@@ -1,0 +1,29 @@
+name: Transfer sensitive issues
+
+on:
+  issues:
+    types:
+      - opened
+      - labeled
+      - reopened
+
+concurrency:
+  group: transfer-sensitive-issue-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  transfer:
+    name: Transfer sensitive issue to private repo
+    runs-on: ubuntu-latest
+
+    if: >
+      contains(github.event.issue.labels.*.name, 'sensitive-report')
+
+    steps:
+      - name: Transfer issue
+        env:
+          GH_TOKEN: ${{ secrets.ISSUE_TRANSFER_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+          DESTINATION_REPO: Achrobat/Dupes-And-Exploits
+        run: |
+          gh issue transfer "$ISSUE_URL" "$DESTINATION_REPO"
