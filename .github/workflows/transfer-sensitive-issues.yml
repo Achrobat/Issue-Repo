@@ -17,9 +17,19 @@ jobs:
     if: github.event.label.name == 'sensitive-report'
 
     steps:
+      - name: Generate GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          repositories: |
+            Issue-Repo
+            Dupes-And-Exploits
+
       - name: Transfer issue
         env:
-          GH_TOKEN: ${{ secrets.ISSUE_TRANSFER_TOKEN }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
           DESTINATION_REPO: Achrobat/Dupes-And-Exploits
         run: |
