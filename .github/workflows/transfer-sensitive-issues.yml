@@ -1,4 +1,4 @@
-name: Transfer sensitive issues
+name: Move sensitive issues privately
 
 on:
   issues:
@@ -6,12 +6,12 @@ on:
       - labeled
 
 concurrency:
-  group: transfer-sensitive-issue-${{ github.event.issue.number }}
+  group: move-sensitive-issue-${{ github.event.issue.number }}
   cancel-in-progress: false
 
 jobs:
-  transfer:
-    name: Transfer sensitive issue to private repo
+  move:
+    name: Copy sensitive issue to private repo and close public issue
     runs-on: ubuntu-latest
 
     if: github.event.label.name == 'sensitive-report'
@@ -23,14 +23,61 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: Achrobat
           repositories: |
             Issue-Repo
             Dupes-And-Exploits
 
-      - name: Transfer issue
+      - name: Create private copy
+        id: private-copy
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          ISSUE_URL: ${{ github.event.issue.html_url }}
+          SOURCE_REPO: Achrobat/Issue-Repo
           DESTINATION_REPO: Achrobat/Dupes-And-Exploits
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_AUTHOR: ${{ github.event.issue.user.login }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
         run: |
-          gh issue transfer "$ISSUE_URL" "$DESTINATION_REPO"
+          cat > private_issue_body.md <<EOF
+          Original reporter: @$ISSUE_AUTHOR
+
+          Original public issue: $ISSUE_URL
+
+          ---
+
+          $ISSUE_BODY
+          EOF
+
+          PRIVATE_URL=$(gh issue create \
+            --repo "$DESTINATION_REPO" \
+            --title "$ISSUE_TITLE" \
+            --body-file private_issue_body.md)
+
+          echo "private_url=$PRIVATE_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Sanitize and close public issue
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          SOURCE_REPO: Achrobat/Issue-Repo
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          PRIVATE_URL: ${{ steps.private-copy.outputs.private_url }}
+        run: |
+          cat > public_issue_body.md <<EOF
+          This report was marked as sensitive and moved to the private dupes/exploits repository.
+
+          The original report details were removed from this public issue to avoid exposing exploit information.
+          EOF
+
+          gh issue edit "$ISSUE_NUMBER" \
+            --repo "$SOURCE_REPO" \
+            --body-file public_issue_body.md
+
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$SOURCE_REPO" \
+            --body "This sensitive report has been moved to the private tracking repository."
+
+          gh issue close "$ISSUE_NUMBER" \
+            --repo "$SOURCE_REPO" \
+            --reason "not planned"
