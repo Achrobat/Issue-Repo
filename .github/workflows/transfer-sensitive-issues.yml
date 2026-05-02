@@ -3,9 +3,7 @@ name: Transfer sensitive issues
 on:
   issues:
     types:
-      - opened
       - labeled
-      - reopened
 
 concurrency:
   group: transfer-sensitive-issue-${{ github.event.issue.number }}
@@ -16,8 +14,7 @@ jobs:
     name: Transfer sensitive issue to private repo
     runs-on: ubuntu-latest
 
-    if: >
-      contains(github.event.issue.labels.*.name, 'sensitive-report')
+    if: github.event.label.name == 'sensitive-report'
 
     steps:
       - name: Transfer issue
