@@ -11,14 +11,14 @@ concurrency:
 
 jobs:
   transfer:
-    name: Transfer sensitive issue to private repo
+    name: Transfer Exploits to Private Repo
     runs-on: ubuntu-latest
 
     if: >
-      contains(github.event.issue.labels.*.name, 'sensitive-report')
+      contains(github.event.issue.labels.*.name, 'Exploit')
 
     steps:
-      - name: Transfer issue
+      - name: Transfer Issue
         env:
           GH_TOKEN: ${{ secrets.ISSUE_TRANSFER_TOKEN }}
           ISSUE_URL: ${{ github.event.issue.html_url }}
