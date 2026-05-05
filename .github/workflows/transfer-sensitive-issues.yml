@@ -1,4 +1,4 @@
-name: Transfer sensitive issues
+name: Transfer Exploits to Private Repo
 
 on:
   issues:
