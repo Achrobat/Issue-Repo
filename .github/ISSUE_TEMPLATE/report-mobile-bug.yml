@@ -1,0 +1,175 @@
+name: Report Mobile Bug or Crash
+description: Report a bug or crash that only occurs in GTNH Mobile on a supported Android configuration.
+labels:
+  - "Status: Triage"
+  - "Mobile"
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for **mobile-exclusive bugs and crashes**. If you can reproduce the problem on the non-mobile version of GTNH, use the regular **Report Bug** or **Report Crash** template instead.
+
+        This issue will receive the **Mobile** label and be automatically transferred to the GTNH Mobile issue tracker.
+
+        **Supported configuration:**
+        - Android 10 or newer.
+        - Amethyst launcher.
+        - A GTNH Mobile modpack archive from our official download page or our dev build page.
+        - Allocated memory: **2.5 GB when playing on a remote server**, or **4 GB in single-player mode**.
+
+        **Required mobile settings:**
+        - `config/lwjgl3ify.cfg`: `B:sharedContext=false` and `B:linuxCreateAppDesktopEntry=false`.
+        - `config/Betterloadingscreen/betterloadingscreen.cfg`: `B:threadedRendering=false`.
+
+        Do not report problems caused by changing these required settings. CraftPresence is intentionally absent from GTNH Mobile because its rich presence integration is intended for the desktop Discord application.
+
+  - type: checkboxes
+    id: supported
+    attributes:
+      label: Supported Configuration
+      description: Only submit a mobile bug report if all of the following are true.
+      options:
+        - label: "I can only reproduce this problem on the mobile version of GTNH."
+          required: true
+        - label: "I use Android 10 or newer and the Amethyst launcher."
+          required: true
+        - label: "My GTNH Mobile archive came from the official download page or the dev build page."
+          required: true
+        - label: "I have allocated the memory specified above for my play mode."
+          required: true
+        - label: "The required mobile settings listed above are unchanged."
+          required: true
+        - label: "I know how to extract logs from my instance and will provide them in this report."
+          required: true
+
+  - type: input
+    id: discord
+    attributes:
+      label: Your GTNH Discord Username
+      description: Leave empty if you don't have one, but this makes it easier to contact you if clarification is needed.
+      placeholder: "Example: Fake"
+
+  - type: input
+    id: version
+    attributes:
+      label: Your Pack Version
+      description: 'Enter the exact GTNH version shown on the main menu, including any beta or dev suffix. Neither "latest" nor "1.7.10" is a valid pack version.'
+      placeholder: "Example: 2.9.0-beta-2"
+    validations:
+      required: true
+
+  - type: input
+    id: launcher
+    attributes:
+      label: Amethyst Launcher Version
+      description: Enter the exact version of the Amethyst launcher you downloaded. Do not enter "latest".
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device Model and Android Version
+      description: Include your phone or tablet model and the Android version it is running.
+      placeholder: "Example: Google Pixel 8, Android 14"
+    validations:
+      required: true
+
+  - type: input
+    id: archive
+    attributes:
+      label: Modpack Archive
+      description: Provide the archive filename and the official download or dev build page URL you obtained it from.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: play_mode
+    attributes:
+      label: Play Mode
+      description: If the game fails to start, select the mode you were setting up to play.
+      options:
+        - Single Player
+        - Remote Server
+    validations:
+      required: true
+
+  - type: input
+    id: server
+    attributes:
+      label: Your Server
+      description: On which server does this happen? Type SP if you are playing single-player, or N/A if the game fails before you can connect.
+      placeholder: "Example: Eta, private server, SP"
+    validations:
+      required: true
+
+  - type: input
+    id: memory
+    attributes:
+      label: Allocated Memory
+      description: Enter the memory allocated to the game in Amethyst, including units. This is not your device's total RAM.
+      placeholder: "Example: 2.5 GB (remote server) or 4 GB (single-player)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: Configuration and Mod Changes
+      description: List every change you made to the modpack configuration, including filenames and changed values (for example, disabling pollution). Also list any added, removed, or updated mods. Enter "None" if you made no changes.
+      placeholder: "Example: None"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Your Expectation
+      description: What were you trying to do, and what did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: The Reality
+      description: What happened instead? Include any error message and attach screenshots or a video if they help show the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction Steps
+      description: Describe how to reproduce the problem. If you cannot reproduce it reliably, describe what you were doing when it occurred and how often it happens.
+      placeholder: |
+        1. Launch GTNH Mobile through Amethyst.
+        2. ...
+        3. The problem occurs.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and Crash Report
+      description: Attach the full client log from the affected session (`logs/fml-client-latest.log`) and a crash report if one was generated. Include the Amethyst launcher log if the game fails to start. Upload the files here or provide links; screenshots of logs are not a substitute for the log files.
+      placeholder: "Attach log files or paste links here. Logs are required even if the game did not crash."
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: final
+    attributes:
+      label: Final Checklist
+      description: Please confirm the following so we can better handle this report.
+      options:
+        - label: "I have searched both this issue tracker and the GTNH Mobile issue tracker, including closed issues, and found no similar report."
+          required: true
+        - label: "I have provided the logs from the affected session."
+          required: true
+        - label: "I can reproduce this problem consistently by following the steps described above."
+          required: false
+        - label: "Other players have confirmed the same problem on a supported mobile configuration."
+          required: false
