@@ -53,15 +53,6 @@ body:
       required: true
 
   - type: textarea
-    id: changes
-    attributes:
-      label: Configuration and Mod Changes
-      description: List every change you made to the modpack configuration, including filenames and changed values (for example, disabling pollution). Also list any added, removed, or updated mods. Enter "None" if you made no changes.
-      placeholder: "Example: None"
-    validations:
-      required: true
-
-  - type: textarea
     id: expectation
     attributes:
       label: Your Expectation
@@ -92,11 +83,9 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: Logs and Crash Report
+      label: Logs / Crash Report
       description: Drop log files here or paste URLs to them. Include `logs/fml-client-latest.log`, a crash report if generated, and the Amethyst launcher log if the game fails to start.
       placeholder: "Drag and drop files here, or paste links to uploaded logs."
-    validations:
-      required: true
 
   - type: checkboxes
     id: final
@@ -107,8 +96,6 @@ body:
         - label: "I can only reproduce this problem on the mobile version of GTNH."
           required: true
         - label: "I have searched both this issue tracker and the GTNH Mobile issue tracker, including closed issues, and found no similar report."
-          required: true
-        - label: "I have provided the logs from the affected session."
           required: true
         - label: "I can reproduce this problem consistently by following the steps described above."
           required: false
